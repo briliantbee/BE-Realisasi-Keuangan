@@ -6,9 +6,11 @@ use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Param\ParamResource;
 use App\Http\Resources\Param\ParticipantResource;
+use App\Http\Resources\Unit\UnitDropdownResource;
 use App\Http\Resources\User\UserUnitResource;
 use App\Models\Param;
 use App\Models\Participant;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -22,6 +24,27 @@ class ParamController extends Controller
     public function unit()
     {
         return $this->param('unit');
+    }
+
+    public function unit_dropdown(Request $request)
+    {
+        $query = Unit::query();
+
+        // Add search functionality
+        if ($request->has('search') && $request->search) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('code', 'like', "%{$search}%");
+            });
+        }
+
+        $units = $query->orderBy('name', 'asc')->get();
+
+        return ResponseFormatter::success(
+            UnitDropdownResource::collection($units), 
+            'success get unit dropdown data'
+        );
     }
 
     public function priority_program()
