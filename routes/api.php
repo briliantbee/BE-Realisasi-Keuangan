@@ -64,6 +64,7 @@ Route::middleware(['auth:api'])->group(function() {
 Route::controller(ParamController::class)->group(function () {
     Route::get('param/execution_unit', 'execution_unit');
     Route::get('param/unit', 'unit');
+    Route::get('param/unit_dropdown', 'unit_dropdown');
     Route::get('param/priority_program', 'priority_program');
     Route::get('param/note_unit', 'note_unit');
     Route::get('param/participant', 'participant');
