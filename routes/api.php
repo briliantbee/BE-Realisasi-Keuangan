@@ -74,15 +74,20 @@ Route::controller(ParamController::class)->group(function () {
 Route::get('/ministry', [MinistryController::class, 'index']);
 
 Route::prefix('realization')->group(function () {
-    Route::post('/', [RealizationController::class, 'store']); 
-    Route::post('/manual', [RealizationController::class, 'storeManual']); // Input Manual
-    Route::put('/{id}', [RealizationController::class, 'update']); // Update
-    Route::delete('/{id}', [RealizationController::class, 'destroy']); // Delete
     Route::get('/total', [RealizationController::class, 'total']);
-    Route::get('/total-by-periode', [RealizationController::class, 'total_by_periode']);
+    Route::get('/total_by_periode', [RealizationController::class, 'total_by_periode']); 
     Route::get('/all', [RealizationController::class, 'all']);
+    
+    Route::post('/', [RealizationController::class, 'create']); 
+    Route::get('/{id}', [RealizationController::class, 'show']);
+    Route::patch('/{id}', [RealizationController::class, 'update']); 
+    Route::delete('/{id}', [RealizationController::class, 'destroy']); 
 });
 
+// Import route (terpisah karena di dalam auth middleware)
+Route::middleware(['auth:api'])->group(function() {
+    Route::post('/realization/import', [RealizationController::class, 'store']);
+});
 Route::get('/honor', [HonorController::class, 'index']);
 
 Route::get('/depkop/cooperative_summary', [DepkopController::class, 'cooperative_summary']);
