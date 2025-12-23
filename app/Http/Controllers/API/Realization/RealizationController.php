@@ -44,13 +44,14 @@ class RealizationController extends Controller
     public function create(Request $request)
     {
         $request->validate([
-            'code' => ['required', 'string', 'max:191'],
+            'code' => ['required', 'string', 'max:191', 'exists:units,code'],
             'budget' => ['required', 'numeric', 'min:0'],
             'aa' => ['required', 'numeric', 'min:0'],
             'budget_aa' => ['required', 'numeric', 'min:0'],
             'realization_spp' => ['required', 'numeric', 'min:0'],
             'sp2d' => ['required', 'numeric', 'min:0'],
             'date' => ['required', 'date'],
+            'parent_code' => ['nullable', 'string', 'max:191', 'exists:units,code'],
         ]);
 
         try {
@@ -64,6 +65,7 @@ class RealizationController extends Controller
                 'realization_spp' => $request->realization_spp,
                 'sp2d' => $request->sp2d,
                 'date' => $request->date,
+                'parent_code' => $request->parent_code, // Tambahkan parent_code
             ]);
 
             DB::commit();
@@ -106,7 +108,7 @@ class RealizationController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'code' => ['sometimes', 'string', 'max:191'],
+            'code' => ['sometimes', 'string', 'max:191', 'exists:units,code'],
             'budget' => ['sometimes', 'numeric', 'min:0'],
             'aa' => ['sometimes', 'numeric', 'min:0'],
             'budget_aa' => ['sometimes', 'numeric', 'min:0'],
