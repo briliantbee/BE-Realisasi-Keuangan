@@ -30,10 +30,10 @@ class RealizationController extends Controller
         DB::transaction(function () use ($request, $date) {
             $day_realization = Realization::whereDate('date', $date);
 
-            if($day_realization->count() > 0) {
+            if ($day_realization->count() > 0) {
                 $day_realization->delete();
             }
-            
+
             Excel::import(new RealizationImport($date), $request->file);
         });
 
@@ -71,14 +71,13 @@ class RealizationController extends Controller
             DB::commit();
 
             return ResponseFormatter::success(
-                new RealizationResource($realization), 
+                new RealizationResource($realization),
                 'success create realization data'
             );
-
         } catch (\Exception $e) {
             DB::rollBack();
             return ResponseFormatter::error(
-                null, 
+                null,
                 'failed to create realization data: ' . $e->getMessage(),
                 500
             );
@@ -90,14 +89,14 @@ class RealizationController extends Controller
     {
         try {
             $realization = Realization::findOrFail($id);
-            
+
             return ResponseFormatter::success(
-                new RealizationResource($realization), 
+                new RealizationResource($realization),
                 'success get realization data'
             );
         } catch (\Exception $e) {
             return ResponseFormatter::error(
-                null, 
+                null,
                 'realization data not found',
                 404
             );
@@ -123,26 +122,25 @@ class RealizationController extends Controller
             DB::beginTransaction();
 
             $realization->update($request->only([
-                'code', 
-                'budget', 
-                'aa', 
-                'budget_aa', 
-                'realization_spp', 
-                'sp2d', 
+                'code',
+                'budget',
+                'aa',
+                'budget_aa',
+                'realization_spp',
+                'sp2d',
                 'date'
             ]));
 
             DB::commit();
 
             return ResponseFormatter::success(
-                new RealizationResource($realization), 
+                new RealizationResource($realization),
                 'success update realization data'
             );
-
         } catch (\Exception $e) {
             DB::rollBack();
             return ResponseFormatter::error(
-                null, 
+                null,
                 'failed to update realization data: ' . $e->getMessage(),
                 500
             );
@@ -157,13 +155,12 @@ class RealizationController extends Controller
             $realization->delete();
 
             return ResponseFormatter::success(
-                null, 
+                null,
                 'success delete realization data'
             );
-
         } catch (\Exception $e) {
             return ResponseFormatter::error(
-                null, 
+                null,
                 'failed to delete realization data: ' . $e->getMessage(),
                 500
             );
@@ -173,7 +170,7 @@ class RealizationController extends Controller
     public function total()
     {
         $realization = Realization::lastData()
-        ->whereNull('parent_code');
+            ->whereNull('parent_code');
 
         // Cek apakah ada data
         if ($realization->count() == 0) {
@@ -198,10 +195,10 @@ class RealizationController extends Controller
         $realization_spp_percent = ($budget_aa > 0) ? round($realization_spp / $budget_aa * 100, 2) : 0;
         $sp2d_percent = ($budget > 0) ? round($sp2d / $budget * 100, 2) : 0;
         $sp2d_percent_aa = ($budget_aa > 0) ? round($sp2d / $budget_aa * 100, 2) : 0;
-        
+
         $first_realization = $realization->first();
         $date = $first_realization ? Carbon::parse($first_realization->date)->format('d-m-Y') : null;
-        
+
         return ResponseFormatter::success([
             'budget' => $budget,
             'aa' => $aa,
@@ -226,20 +223,20 @@ class RealizationController extends Controller
         $current_year = Carbon::parse(Carbon::now())->format('Y');
 
         $realization = Realization::joinUnit()
-        ->select(
-            DB::raw("(sum(budget)) as total_budget"),
-            DB::raw("(sum(realization_spp)) as total_realization_spp"),
-            DB::raw("(sum(aa)) as total_aa"),
-            DB::raw("(sum(budget_aa)) as total_budget_aa"),
-            DB::raw("(sum(sp2d)) as total_sp2d"),
-            DB::raw("(DATE_FORMAT(date, '%d-%m-%Y')) as date")
-        )
-        ->whereNull('parent_code')
-        ->whereYear('date', $current_year)
-        ->orderByRaw('year(date) desc')
-        ->orderByRaw('month(date) desc')
-        ->orderByRaw('day(date) desc')
-        ->groupBy(DB::raw("DATE_FORMAT(date, '%Y-%m-%d')"));
+            ->select(
+                DB::raw("(sum(budget)) as total_budget"),
+                DB::raw("(sum(realization_spp)) as total_realization_spp"),
+                DB::raw("(sum(aa)) as total_aa"),
+                DB::raw("(sum(budget_aa)) as total_budget_aa"),
+                DB::raw("(sum(sp2d)) as total_sp2d"),
+                DB::raw("(DATE_FORMAT(date, '%d-%m-%Y')) as date")
+            )
+            ->whereNull('parent_code')
+            ->whereYear('date', $current_year)
+            ->orderByRaw('year(date) desc')
+            ->orderByRaw('month(date) desc')
+            ->orderByRaw('day(date) desc')
+            ->groupBy(DB::raw("DATE_FORMAT(date, '%Y-%m-%d')"));
 
         $result = $realization->limit($limit)->get();
         return ResponseFormatter::success($result, 'success get total by periode data');
@@ -252,12 +249,12 @@ class RealizationController extends Controller
         ]);
 
         $realization = Realization::lastData()
-        ->whereNull('parent_code')->get();
+            ->whereNull('parent_code')->get();
 
-        $result = ($request->filter == 'eselon1') 
-        ? RealizationResource::collection($realization) 
-        : RealizationParentResource::collection($realization);
-        
+        $result = ($request->filter == 'eselon1')
+            ? RealizationResource::collection($realization)
+            : RealizationParentResource::collection($realization);
+
         return ResponseFormatter::success($result, 'success get all realization data');
     }
 }
