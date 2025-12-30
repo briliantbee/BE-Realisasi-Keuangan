@@ -102,37 +102,37 @@ class UnitSeeder extends Seeder
         Unit::create([
             'code' => '401744A',
             'parent_code' => '401744',
-            'name' => 'Sekretariat Deputi Bidang Kewirausahaan'
+            'name' => 'Sekretaris Deputi Bidang Kewirausahaan'
         ]);
 
         Unit::create([
             'code' => '401744B',
             'parent_code' => '401744',
-            'name' => 'Asdep Konsultasi Bisnis dan Pendampingan'
+            'name' => 'Asdep Ekosistem Bisnis Wirausaha'
         ]);
 
         Unit::create([
             'code' => '401744C',
             'parent_code' => '401744',
-            'name' => 'Asdep Pengembangan TI dan Inkubasi Usaha'
+            'name' => 'Asdep Pendampingan Inovasi dan Keberlanjutan Usaha'
         ]);
 
         Unit::create([
             'code' => '401744D',
             'parent_code' => '401744',
-            'name' => 'Asdep Pengembangan Ekosistem Bisnis'
+            'name' => 'Asdep Perluasan Pembiayaan Wirausaha'
         ]);
 
         Unit::create([
             'code' => '401744E',
             'parent_code' => '401744',
-            'name' => 'Asdep Pembiayaan Wirausaha'
+            'name' => 'Asdep Pembinaan JF PKWU'
         ]);
 
         Unit::create([
             'code' => '401744F',
             'parent_code' => '401744',
-            'name' => 'Asdep Pemetaan Data, Analis dan Pengkajian Usaha'
+            'name' => 'Asdep Inkubasi dan Digitalisasi Wirausaha'
         ]);
 
         Unit::create([
